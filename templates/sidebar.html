@@ -1,45 +1,87 @@
 <aside class="col-lg-4">
     <!-- Widget [Search Bar Widget]-->
     <div class="widget search">
-    <header>
-        <h3 class="h6">Search the blog</h3>
-    </header>
-    <form action="{% url 'search' %}" class="search-form">
-        <div class="form-group">
-        <input type="text" name="q" placeholder="What are you looking for?">
-        <button type="submit" class="submit"><i class="icon-search"></i></button>
-        </div>
-    </form>
+        <header>
+            <h3 class="h6">Search the blog</h3>
+        </header>
+        <form action="{% url 'search' %}" class="search-form">
+            <div class="form-group">
+                <input type="text" name="q" placeholder="What are you looking for?">
+                <button type="submit" class="submit"><i class="icon-search"></i></button>
+            </div>
+        </form>
     </div>
+    <!-- Widget [ Polling Widget] -->
+    <div class="widget polls">
+
+        <div class="panel panel-primary">
+            <div class="panel-heading">
+                {% for q in latest_questions %}
+                <h3 class="panel-title">
+                    <span class="glyphicon glyphicon-arrow-right"></span>{{q.question_text}} <a
+                        href="http://www.jquery2dotnet.com" target="_blank"><span
+                            class="glyphicon glyphicon-new-window"></span></a>
+                </h3>
+            </div>
+            <div class="panel-body">
+                <ul class="list-group">
+                    <form action="{% url 'vote' q.id %}" method="post">
+                        {% csrf_token %}
+
+                        {% for choice in q.choice_set.all %}
+                        <input type="radio" name="choice" id="choice{{forloop.counter}}" value=" {{choice.id}}" />
+                        <label for="choice{{forloop.counter}}"> {{choice.choice_text}}</label> <br>
+                        <!-- <li class="list-group-item">
+                            <div class="radio">
+                                <label>
+                                    <input type="radio" name="optionsRadios">
+                                    {{c.choice_text}}
+                                </label>
+                            </div>
+                        </li> -->
+                        {% endfor %}
+                </ul>
+                </form>
+            </div>
+            {% endfor %}
+            <div class="panel-footer">
+                <button type="button" class="btn btn-primary btn-sm">
+                    Vote</button>
+                <a href="#">View Result</a></div>
+        </div>
+
+    </div>
+
     <!-- Widget [Latest Posts Widget]        -->
     <div class="widget latest-posts">
-    <header>
-        <h3 class="h6">Latest Posts</h3>
-    </header>
-    <div class="blog-posts">
-        {% for post in most_recent %}
-        <a href="{{ post.get_absolute_url }}">
-            <div class="item d-flex align-items-center">
-            <div class="image"><img src="{{ post.thumbnail.url }}" alt="..." class="img-fluid"></div>
-            <div class="title"><strong>{{ post.title }}</strong>
-                <div class="d-flex align-items-center">
-                <div class="views"><i class="icon-eye"></i> {{ post.view_count }}</div>
-                <div class="comments"><i class="icon-comment"></i>{{ post.comment_count }}</div>
+        <header>
+            <h3 class="h6">Latest Posts</h3>
+        </header>
+        <div class="blog-posts">
+            {% for post in most_recent %}
+            <a href="{{ post.get_absolute_url }}">
+                <div class="item d-flex align-items-center">
+                    <div class="image"><img src="{{ post.thumbnail.url }}" alt="..." class="img-fluid"></div>
+                    <div class="title"><strong>{{ post.title }}</strong>
+                        <div class="d-flex align-items-center">
+                            <div class="views"><i class="icon-eye"></i> {{ post.view_count }}</div>
+                            <div class="comments"><i class="icon-comment"></i>{{ post.comment_count }}</div>
+                        </div>
+                    </div>
                 </div>
-            </div>
-            </div>
-        </a>
-        {% endfor %}
+            </a>
+            {% endfor %}
+        </div>
     </div>
     <!-- Widget [Categories Widget]-->
     <div class="widget categories">
-    <header>
-        <h3 class="h6">Categories</h3>
-    </header>
-    {% for cat in category_count %}
-    <div class="item d-flex justify-content-between">
-        <a href="#">{{ cat.categories__title }}</a><span>{{ cat.categories__title__count }}</span>
-    </div>
-    {% endfor %}
+        <header>
+            <h3 class="h6">Categories</h3>
+        </header>
+        {% for cat in category_count %}
+        <div class="item d-flex justify-content-between">
+            <a href="#">{{ cat.categories__title }}</a><span>{{ cat.categories__title__count }}</span>
+        </div>
+        {% endfor %}
     </div>
 </aside>

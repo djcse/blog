@@ -9,6 +9,10 @@ from .models import Post, Author, PostView
 from marketing.forms import EmailSignupForm
 from marketing.models import Signup
 
+from django.http import HttpResponseRedirect, HttpResponse
+from polls.models import Question, Choice
+
+
 form = EmailSignupForm()
 
 
@@ -104,6 +108,8 @@ class PostListView(ListView):
     paginate_by = 1
 
     def get_context_data(self, **kwargs):
+        # print("latest_questions")
+        latest_questions = Question.objects.order_by('-pub_date')[:1]
         category_count = get_category_count()
         most_recent = Post.objects.order_by('-timestamp')[:3]
         context = super().get_context_data(**kwargs)
@@ -111,8 +117,8 @@ class PostListView(ListView):
         context['page_request_var'] = "page"
         context['category_count'] = category_count
         context['form'] = self.form
+        context['latest_questions'] = latest_questions
         return context
-
 
 def post_list(request):
     category_count = get_category_count()
@@ -127,7 +133,6 @@ def post_list(request):
         paginated_queryset = paginator.page(1)
     except EmptyPage:
         paginated_queryset = paginator.page(paginator.num_pages)
-
     context = {
         'queryset': paginated_queryset,
         'most_recent': most_recent,
@@ -287,3 +292,24 @@ def post_delete(request, id):
     post = get_object_or_404(Post, id=id)
     post.delete()
     return redirect(reverse("post-list"))
+
+def vote(request, question_id):
+    question = get_object_or_404(Question, pk=question_id)
+    try:
+        selected_choice = question.choice_set.get(pk = request.POST['choice'])
+    except:
+        return render(request, 'blog.html', {'question':question, 'error_message':"Please select a choice"})
+    else:
+        selected_choice.votes +=1
+        selected_choice.save()
+
+        return HttpResponseRedirect(reverse('blog', args = (question_id)))
+
+    
+def details(request, question_id):
+    question = get_object_or_404(Question, pk = question_id)
+    return render(request, 'blog.html', {'question': question})
+def results(request, question_id):
+    question = get_object_or_404(Question, pk= question_id)
+    return render(request, 'blog.html', {'question':question})
+    
