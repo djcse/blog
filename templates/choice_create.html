@@ -1,0 +1,17 @@
+{% extends 'base.html' %}
+
+{% block content %}
+
+<div class="col-4 offset-4 mb-5 mt-5">
+<!--<h3>{{ title }} an article</h3>-->
+<h2>Add Choices for the Following Question</h2>
+    <h3>{{question.question_text}}</h3>
+    <form method="POST">
+        {% csrf_token %}
+        {{ form.as_p }}
+        <button type="submit" class="save btn btn-default">Save</button>
+    </form>
+
+</div>
+
+{% endblock content %}

@@ -13,6 +13,7 @@ from django.http import HttpResponseRedirect, HttpResponse
 from polls.models import Question, Choice
 
 
+
 form = EmailSignupForm()
 
 
@@ -109,8 +110,9 @@ class PostListView(ListView):
 
     def get_context_data(self, **kwargs):
         # print("latest_questions")
-        latest_questions = Question.objects.order_by('-pub_date')[:1]
+        latest_questions = Question.objects.order_by('-pub_date')[:2]
         category_count = get_category_count()
+
         most_recent = Post.objects.order_by('-timestamp')[:3]
         context = super().get_context_data(**kwargs)
         context['most_recent'] = most_recent
@@ -159,6 +161,7 @@ class PostDetailView(DetailView):
         return obj
 
     def get_context_data(self, **kwargs):
+        print("called again")
         category_count = get_category_count()
         most_recent = Post.objects.order_by('-timestamp')[:3]
         context = super().get_context_data(**kwargs)
@@ -241,7 +244,6 @@ def post_create(request):
     }
     return render(request, "post_create.html", context)
 
-
 class PostUpdateView(UpdateView):
     model = Post
     template_name = 'post_create.html'
@@ -312,4 +314,3 @@ def details(request, question_id):
 def results(request, question_id):
     question = get_object_or_404(Question, pk= question_id)
     return render(request, 'blog.html', {'question':question})
-    

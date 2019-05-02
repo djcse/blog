@@ -1,0 +1,16 @@
+{% extends 'base.html' %}
+
+{% block content %}
+
+<div class="col-4 offset-4 mb-5 mt-5">
+<!--<h3>{{ title }} an article</h3>-->
+<h2>A New Question</h2>
+    <form method="POST" class="post-form">
+        {% csrf_token %}
+        {{ form.as_p }}
+        <button type="submit" class="save btn btn-default">Save</button>
+    </form>
+
+</div>
+
+{% endblock content %}

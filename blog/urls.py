@@ -18,6 +18,10 @@ from posts.views import (
     PostUpdateView,
     PostDeleteView
 )
+from polls.views import (
+    QuestionCreateView,
+    choice_create
+)
 from marketing.views import email_list_signup
 
 urlpatterns = [
@@ -30,8 +34,10 @@ urlpatterns = [
     path('email-signup/', email_list_signup, name='email-list-signup'),
     # path('create/', post_create, name='post-create'),
     path('create/', PostCreateView.as_view(), name='post-create'),
+    path('question-create/', QuestionCreateView.as_view(), name='question-create'),
+    path('choice-create/<question_id>/', choice_create, name='choice-create'),
 
-    path('blog/', PostListView.as_view(), name='vote'),
+    #path('blog/', PostListView.as_view(), name='vote'),
 
     # path('post/<id>/', post_detail, name='post-detail'),
     path('post/<pk>/', PostDetailView.as_view(), name='post-detail'),
